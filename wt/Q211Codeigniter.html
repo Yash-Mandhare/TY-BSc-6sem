@@ -1,0 +1,40 @@
+<!-- Add a JavaScript File in Codeigniter. The Javascript code should check whether a number is positive or negative -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Number Checker</title>
+    <!-- Load jQuery (optional, if your JavaScript code requires jQuery) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+
+<div>
+    <h2>Number Checker</h2>
+    <label for="number">Enter a number:</label>
+    <input type="number" id="number" name="number">
+    <button onclick="checkNumber()">Check</button>
+    <p id="result"></p>
+</div>
+
+<script>
+    function checkNumber() {
+        var number = document.getElementById('number').value;
+        if (number === '' || isNaN(number)) {
+            document.getElementById('result').innerHTML = 'Please enter a valid number.';
+        } else {
+            number = parseFloat(number);
+            if (number > 0) {
+                document.getElementById('result').innerHTML = number + ' is positive.';
+            } else if (number < 0) {
+                document.getElementById('result').innerHTML = number + ' is negative.';
+            } else {
+                document.getElementById('result').innerHTML = number + ' is zero.';
+            }
+        }
+    }
+</script>
+
+</body>
+</html>

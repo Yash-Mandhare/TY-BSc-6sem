@@ -1,0 +1,45 @@
+<!-- Write a Javascript program to accept name of student, change font color to red, font size to 18 ifstudent name is present otherwise on clicking on empty text box display image which changes its size(Use onblur, onload, onmousehover, onmouseclick, onmouseup) -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Student Name Input</title>
+<script>
+function changeStyle() {
+    var studentName = document.getElementById("studentName").value;
+
+    if (studentName.trim() !== "") {
+        // Change font color to red and font size to 18 if student name is present
+        document.getElementById("studentName").style.color = "red";
+        document.getElementById("studentName").style.fontSize = "18px";
+    } else {
+        // Display an image and change its size when the text box is empty
+        document.getElementById("image").style.display = "block";
+    }
+}
+
+function resizeImage() {
+    // Change the size of the image when hovered over
+    document.getElementById("image").style.width = "200px";
+    document.getElementById("image").style.height = "200px";
+}
+
+function resetImageSize() {
+    // Reset the size of the image when mouse click is released
+    document.getElementById("image").style.width = "150px";
+    document.getElementById("image").style.height = "150px";
+}
+</script>
+</head>
+<body>
+
+<h2>Enter Student Name</h2>
+
+<input type="text" id="studentName" placeholder="Enter student name" onblur="changeStyle()">
+
+<img id="image" src="https://via.placeholder.com/150" alt="Placeholder Image" style="display: none;">
+<!-- Placeholder image with a size of 150x150 pixels -->
+
+</body>
+</html>

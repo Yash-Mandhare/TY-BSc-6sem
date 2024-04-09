@@ -1,0 +1,34 @@
+<!-- Write AJAX program where the user is requested to write his or her name in a text box, and theserver keeps sending back responses while the user is typing. If the user name is not entered then themessage displayed will be, “Stranger, please tell me your name!”. If the name is Rohit, Virat, Dhoni,Ashwin or Harbhajan , the server responds with “Hello, master !”. If the name is anything else, themessage will be “, I don’t know you!” -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>AJAX Name Checker</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+$(document).ready(function(){
+    $("#name").on('input', function() {
+        var name = $(this).val();
+        $.ajax({
+            url: 'Q131check_name.php',
+            method: 'POST',
+            data: { name: name },
+            success: function(response) {
+                $("#result").text(response);
+            }
+        });
+    });
+});
+</script>
+</head>
+<body>
+
+<h2>Type your name:</h2>
+
+<input type="text" id="name" placeholder="Enter your name">
+
+<div id="result"></div>
+
+</body>
+</html>

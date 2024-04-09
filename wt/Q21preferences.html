@@ -1,0 +1,31 @@
+<!-- Write a PHP script to change the preferences of your web page like font style, font size, font color, background color using cookie. Display selected setting on next web page and actual implementation(with new settings) on third page (Use Cookies) -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Preferences</title>
+</head>
+<body>
+    <h2>Choose Your Preferences</h2>
+    <form action="Q21display.php" method="post">
+        Font Style:
+        <select name="font_style">
+            <option value="Arial">Arial</option>
+            <option value="Times New Roman">Times New Roman</option>
+            <option value="Verdana">Verdana</option>
+        </select><br>
+        Font Size:
+        <select name="font_size">
+            <option value="12px">Small</option>
+            <option value="16px">Medium</option>
+            <option value="20px">Large</option>
+        </select><br>
+        Font Color:
+        <input type="color" name="font_color"><br>
+        Background Color:
+        <input type="color" name="bg_color"><br>
+        <input type="submit" value="Save Preferences">
+    </form>
+</body>
+</html>
