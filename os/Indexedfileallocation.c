@@ -1,245 +1,167 @@
-// Write a program to simulate Indexed file allocation method. Assume disk with n number of blocks. Give value of n as input. Write menu driver program with menu options as mentioned above and implement each option
-
-
+//  Write a program to simulate Indexed file allocation method. Assume disk with n
+// number of blocks. Give value of n as input. Randomly mark some block as allocated and
+// accordingly maintain the list of free blocks Write menu driver program with menu
+// options as mentioned above and implement each option.
+// • Show Bit Vector
+// • Create New File
+// • Show Directory
+// • Delete File
+// • Exit
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdbool.h>
+#include <time.h>
 
 #define MAX_BLOCKS 100
 
-typedef struct IndexNode {
-    int block_num;
-    struct IndexNode* next;
-} IndexNode;
-
-IndexNode* index_table[MAX_BLOCKS] = {NULL}; // Index Table (IT)
-
-void displayIT(int n) {
-    printf("Index Table (IT):\n");
-    printf("Block No.\tIndex Blocks\n");
+void showBitVector(int allocated[], int n) {
+    printf("Bit Vector (1 for allocated, 0 for free):\n");
     for (int i = 0; i < n; i++) {
-        printf("%d\t\t", i);
-        IndexNode* current = index_table[i];
-        while (current != NULL) {
-            printf("%d -> ", current->block_num);
-            current = current->next;
-        }
-        printf("NULL\n");
+        printf("%d ", allocated[i]);
+    }
+    printf("\n");
+}
+
+void createNewFile(int allocated[], int n, int directory[], int index) {
+    if (allocated[index] == 0) {
+        printf("Creating new file with index %d\n", index);
+        directory[index] = 1;
+        allocated[index] = 1;
+    } else {
+        printf("Block is already allocated. Choose another block.\n");
     }
 }
 
-void allocateFile(int n) {
-    int index_block;
-    printf("Enter the index block number: ");
-    scanf("%d", &index_block);
-
-    if (index_block < 0 || index_block >= n) {
-        printf("Invalid index block number.\n");
-        return;
+void showDirectory(int directory[], int n) {
+    printf("Directory (1 for file, 0 for empty):\n");
+    for (int i = 0; i < n; i++) {
+        printf("%d ", directory[i]);
     }
-
-    if (index_table[index_block] != NULL) {
-        printf("Index block already allocated.\n");
-        return;
-    }
-
-    int num_blocks;
-    printf("Enter the number of blocks to allocate: ");
-    scanf("%d", &num_blocks);
-
-    if (num_blocks <= 0 || num_blocks > n - 1) {
-        printf("Invalid number of blocks.\n");
-        return;
-    }
-
-    index_table[index_block] = (IndexNode*)malloc(sizeof(IndexNode));
-    if (index_table[index_block] == NULL) {
-        printf("Memory allocation failed.\n");
-        return;
-    }
-
-    index_table[index_block]->block_num = -1; // Dummy node to indicate index block
-    index_table[index_block]->next = NULL;
-
-    for (int i = 0; i < num_blocks; i++) {
-        int block_num;
-        printf("Enter the block number to allocate: ");
-        scanf("%d", &block_num);
-
-        if (block_num < 0 || block_num >= n) {
-            printf("Invalid block number.\n");
-            free(index_table[index_block]);
-            index_table[index_block] = NULL;
-            return;
-        }
-
-        IndexNode* new_node = (IndexNode*)malloc(sizeof(IndexNode));
-        if (new_node == NULL) {
-            printf("Memory allocation failed.\n");
-            return;
-        }
-
-        new_node->block_num = block_num;
-        new_node->next = NULL;
-
-        // Insert new node at the end of the linked list
-        IndexNode* current = index_table[index_block];
-        while (current->next != NULL) {
-            current = current->next;
-        }
-        current->next = new_node;
-    }
-
-    printf("File allocated successfully.\n");
+    printf("\n");
 }
 
-void deallocateFile(int n) {
-    int index_block;
-    printf("Enter the index block number of the file to deallocate: ");
-    scanf("%d", &index_block);
-
-    if (index_block < 0 || index_block >= n) {
-        printf("Invalid index block number.\n");
-        return;
+void deleteFile(int allocated[], int n, int directory[], int index) {
+    if (allocated[index] == 1 && directory[index] == 1) {
+        printf("Deleting file with index %d\n", index);
+        directory[index] = 0;
+        allocated[index] = 0;
+    } else {
+        printf("No file exists in this block.\n");
     }
-
-    if (index_table[index_block] == NULL) {
-        printf("No file is allocated at this index block.\n");
-        return;
-    }
-
-    IndexNode* current = index_table[index_block]->next; // Skip dummy node
-    while (current != NULL) {
-        IndexNode* temp = current;
-        current = current->next;
-        free(temp);
-    }
-
-    free(index_table[index_block]);
-    index_table[index_block] = NULL;
-    printf("File deallocated successfully.\n");
 }
 
 int main() {
+    int allocated[MAX_BLOCKS] = {0}; // Initially all blocks are free
+    int directory[MAX_BLOCKS] = {0}; // Initially no files exist
     int n;
-    printf("Enter the number of blocks in the disk: ");
+
+    printf("Enter number of disk blocks: ");
     scanf("%d", &n);
 
-    int choice;
+    if (n > MAX_BLOCKS) {
+        printf("Error: Number of blocks exceeds maximum.\n");
+        return 1;
+    }
+
+    srand(time(NULL)); // Seed for random number generation
+
+    int choice, index;
     do {
         printf("\nMenu:\n");
-        printf("1. Allocate File\n");
-        printf("2. Deallocate File\n");
-        printf("3. Display Index Table (IT)\n");
-        printf("4. Exit\n");
+        printf("1. Show Bit Vector\n");
+        printf("2. Create New File\n");
+        printf("3. Show Directory\n");
+        printf("4. Delete File\n");
+        printf("5. Exit\n");
         printf("Enter your choice: ");
         scanf("%d", &choice);
 
         switch (choice) {
             case 1:
-                allocateFile(n);
+                showBitVector(allocated, n);
                 break;
             case 2:
-                deallocateFile(n);
+                printf("Enter index for the new file: ");
+                scanf("%d", &index);
+                if (index >= 0 && index < n) {
+                    createNewFile(allocated, n, directory, index);
+                } else {
+                    printf("Invalid index.\n");
+                }
                 break;
             case 3:
-                displayIT(n);
+                showDirectory(directory, n);
                 break;
             case 4:
+                printf("Enter index of the file to delete: ");
+                scanf("%d", &index);
+                if (index >= 0 && index < n) {
+                    deleteFile(allocated, n, directory, index);
+                } else {
+                    printf("Invalid index.\n");
+                }
+                break;
+            case 5:
                 printf("Exiting program.\n");
                 break;
             default:
-                printf("Invalid choice. Please enter a valid option.\n");
-                break;
+                printf("Invalid choice. Please try again.\n");
         }
-    } while (choice != 4);
-
-    // Free allocated memory
-    for (int i = 0; i < n; i++) {
-        if (index_table[i] != NULL) {
-            IndexNode* current = index_table[i]->next; // Skip dummy node
-            while (current != NULL) {
-                IndexNode* temp = current;
-                current = current->next;
-                free(temp);
-            }
-            free(index_table[i]);
-        }
-    }
+    } while (choice != 5);
 
     return 0;
 }
 
-
 /*
-Enter the number of blocks in the disk: 10
+Enter number of disk blocks: 10
 
 Menu:
-1. Allocate File
-2. Deallocate File
-3. Display Index Table (IT)
-4. Exit
-Enter your choice: 1
-Enter the index block number: 0
-Enter the number of blocks to allocate: 3
-Enter the block number to allocate: 1
-Enter the block number to allocate: 2
-Enter the block number to allocate: 3
-File allocated successfully.
-
-Menu:
-1. Allocate File
-2. Deallocate File
-3. Display Index Table (IT)
-4. Exit
-Enter your choice: 3
-Index Table (IT):
-Block No.    Index Blocks
-0           1 -> 2 -> 3 -> NULL
-1           NULL
-2           NULL
-3           NULL
-4           NULL
-5           NULL
-6           NULL
-7           NULL
-8           NULL
-9           NULL
-
-Menu:
-1. Allocate File
-2. Deallocate File
-3. Display Index Table (IT)
-4. Exit
+1. Show Bit Vector
+2. Create New File
+3. Show Directory
+4. Delete File
+5. Exit
 Enter your choice: 2
-Enter the index block number of the file to deallocate: 0
-File deallocated successfully.
+Enter index for the new file: 3
+Creating new file with index 3
 
 Menu:
-1. Allocate File
-2. Deallocate File
-3. Display Index Table (IT)
-4. Exit
+1. Show Bit Vector
+2. Create New File
+3. Show Directory
+4. Delete File
+5. Exit
 Enter your choice: 3
-Index Table (IT):
-Block No.    Index Blocks
-0           NULL
-1           NULL
-2           NULL
-3           NULL
-4           NULL
-5           NULL
-6           NULL
-7           NULL
-8           NULL
-9           NULL
+Directory (1 for file, 0 for empty):
+0 0 0 1 0 0 0 0 0 0 
 
 Menu:
-1. Allocate File
-2. Deallocate File
-3. Display Index Table (IT)
-4. Exit
+1. Show Bit Vector
+2. Create New File
+3. Show Directory
+4. Delete File
+5. Exit
 Enter your choice: 4
+Enter index of the file to delete: 3
+Deleting file with index 3
+
+Menu:
+1. Show Bit Vector
+2. Create New File
+3. Show Directory
+4. Delete File
+5. Exit
+Enter your choice: 1
+Bit Vector (1 for allocated, 0 for free):
+0 0 0 0 0 0 0 0 0 0 
+
+Menu:
+1. Show Bit Vector
+2. Create New File
+3. Show Directory
+4. Delete File
+5. Exit
+Enter your choice: 5
 Exiting program.
+
 */
