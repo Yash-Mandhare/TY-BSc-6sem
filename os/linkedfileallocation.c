@@ -1,227 +1,171 @@
-// Write a program to simulate Linked file allocation method. Assume disk with n number of blocks. Give value of n as input. Write menu driver program with menu options as mentioned above and implement each option.
+// Write a program to simulate Linked file allocation method. Assume disk with n
+// number of blocks. Give value of n as input. Randomly mark some block as allocated and
+// accordingly maintain the list of free blocks Write menu driver program with menu
+// options as mentioned below and implement each option.
+// • Show Bit Vector
+// • Create New File
+// • Show Directory
+// • Exit
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdbool.h>
+#include <time.h>
 
 #define MAX_BLOCKS 100
 
-typedef struct Node {
-    int block_num;
-    struct Node* next;
-} Node;
+// Node structure for linked list
+struct Node {
+    int blockIndex;
+    struct Node *next;
+};
 
-Node* allocated[MAX_BLOCKS] = {NULL}; // File Allocation Table (FAT)
-
-void displayFAT(int n) {
-    printf("File Allocation Table (FAT):\n");
-    printf("Block No.\tAllocated Blocks\n");
+void showBitVector(int allocated[], int n) {
+    printf("Bit Vector (1 for allocated, 0 for free):\n");
     for (int i = 0; i < n; i++) {
-        printf("%d\t\t", i);
-        Node* current = allocated[i];
-        while (current != NULL) {
-            printf("%d -> ", current->block_num);
-            current = current->next;
-        }
-        printf("NULL\n");
+        printf("%d ", allocated[i]);
     }
+    printf("\n");
 }
 
-void allocateFile(int n) {
-    int start_block;
-    printf("Enter starting block number: ");
-    scanf("%d", &start_block);
+void createNewFile(struct Node **head, int allocated[], int n) {
+    int index;
+    printf("Enter index for the new file: ");
+    scanf("%d", &index);
 
-    if (start_block < 0 || start_block >= n) {
-        printf("Invalid starting block number.\n");
+    if (index < 0 || index >= n) {
+        printf("Invalid index.\n");
         return;
     }
 
-    Node* new_node = (Node*)malloc(sizeof(Node));
-    if (new_node == NULL) {
+    if (allocated[index] == 1) {
+        printf("Block is already allocated. Choose another block.\n");
+        return;
+    }
+
+    struct Node *newNode = (struct Node *)malloc(sizeof(struct Node));
+    if (newNode == NULL) {
         printf("Memory allocation failed.\n");
         return;
     }
 
-    new_node->block_num = start_block;
-    new_node->next = NULL;
+    newNode->blockIndex = index;
+    newNode->next = *head;
+    *head = newNode;
 
-    if (allocated[start_block] != NULL) {
-        printf("Block already allocated.\n");
-        free(new_node);
-        return;
-    }
+    allocated[index] = 1;
 
-    allocated[start_block] = new_node;
-    printf("File allocated successfully.\n");
+    printf("New file created with index %d\n", index);
 }
 
-void deallocateFile(int n) {
-    int start_block;
-    printf("Enter starting block number of the file to deallocate: ");
-    scanf("%d", &start_block);
-
-    if (start_block < 0 || start_block >= n) {
-        printf("Invalid starting block number.\n");
-        return;
-    }
-
-    if (allocated[start_block] == NULL) {
-        printf("No file is allocated at this block.\n");
-        return;
-    }
-
-    Node* current = allocated[start_block];
+void showDirectory(struct Node *head) {
+    printf("Directory (File blocks):\n");
+    struct Node *current = head;
     while (current != NULL) {
-        Node* temp = current;
+        printf("%d ", current->blockIndex);
+        current = current->next;
+    }
+    printf("\n");
+}
+
+void freeList(struct Node *head) {
+    struct Node *current = head;
+    while (current != NULL) {
+        struct Node *temp = current;
         current = current->next;
         free(temp);
     }
-
-    allocated[start_block] = NULL;
-    printf("File deallocated successfully.\n");
 }
 
 int main() {
+    int allocated[MAX_BLOCKS] = {0}; // Initially all blocks are free
+    struct Node *directory = NULL; // Initially no files exist
     int n;
-    printf("Enter the number of blocks in the disk: ");
+
+    printf("Enter number of disk blocks: ");
     scanf("%d", &n);
+
+    if (n > MAX_BLOCKS) {
+        printf("Error: Number of blocks exceeds maximum.\n");
+        return 1;
+    }
+
+    srand(time(NULL)); // Seed for random number generation
 
     int choice;
     do {
         printf("\nMenu:\n");
-        printf("1. Allocate File\n");
-        printf("2. Deallocate File\n");
-        printf("3. Display File Allocation Table (FAT)\n");
+        printf("1. Show Bit Vector\n");
+        printf("2. Create New File\n");
+        printf("3. Show Directory\n");
         printf("4. Exit\n");
         printf("Enter your choice: ");
         scanf("%d", &choice);
 
         switch (choice) {
             case 1:
-                allocateFile(n);
+                showBitVector(allocated, n);
                 break;
             case 2:
-                deallocateFile(n);
+                createNewFile(&directory, allocated, n);
                 break;
             case 3:
-                displayFAT(n);
+                showDirectory(directory);
                 break;
             case 4:
                 printf("Exiting program.\n");
+                freeList(directory);
                 break;
             default:
-                printf("Invalid choice. Please enter a valid option.\n");
-                break;
+                printf("Invalid choice. Please try again.\n");
         }
     } while (choice != 4);
-
-    // Free allocated memory
-    for (int i = 0; i < n; i++) {
-        Node* current = allocated[i];
-        while (current != NULL) {
-            Node* temp = current;
-            current = current->next;
-            free(temp);
-        }
-    }
 
     return 0;
 }
 
-/*
-Enter the number of blocks in the disk: 20
 
-Menu:
-1. Allocate File
-2. Deallocate File
-3. Display File Allocation Table (FAT)
-4. Exit
-Enter your choice: 1
-Enter starting block number: 3
-File allocated successfully.
+// Enter number of disk blocks: 10
 
-Menu:
-1. Allocate File
-2. Deallocate File
-3. Display File Allocation Table (FAT)
-4. Exit
-Enter your choice: 1
-Enter starting block number: 5
-File allocated successfully.
+// Menu:
+// 1. Show Bit Vector
+// 2. Create New File
+// 3. Show Directory
+// 4. Exit
+// Enter your choice: 2
+// Enter index for the new file: 3
+// New file created with index 3
 
-Menu:
-1. Allocate File
-2. Deallocate File
-3. Display File Allocation Table (FAT)
-4. Exit
-Enter your choice: 3
-File Allocation Table (FAT):
-Block No.       Allocated Blocks
-0               NULL
-1               NULL
-2               NULL
-3               3 -> NULL
-4               NULL
-5               5 -> NULL
-6               NULL
-7               NULL
-8               NULL
-9               NULL
-10              NULL
-11              NULL
-12              NULL
-13              NULL
-14              NULL
-15              NULL
-16              NULL
-17              NULL
-18              NULL
-19              NULL
+// Menu:
+// 1. Show Bit Vector
+// 2. Create New File
+// 3. Show Directory
+// 4. Exit
+// Enter your choice: 2
+// Enter index for the new file: 6
+// New file created with index 6
 
-Menu:
-1. Allocate File
-2. Deallocate File
-3. Display File Allocation Table (FAT)
-4. Exit
-Enter your choice: 2
-Enter starting block number of the file to deallocate: 3
-File deallocated successfully.
+// Menu:
+// 1. Show Bit Vector
+// 2. Create New File
+// 3. Show Directory
+// 4. Exit
+// Enter your choice: 3
+// Directory (File blocks):
+// 6 3 
 
-Menu:
-1. Allocate File
-2. Deallocate File
-3. Display File Allocation Table (FAT)
-4. Exit
-Enter your choice: 3
-File Allocation Table (FAT):
-Block No.       Allocated Blocks
-0               NULL
-1               NULL
-2               NULL
-3               NULL
-4               NULL
-5               5 -> NULL
-6               NULL
-7               NULL
-8               NULL
-9               NULL
-10              NULL
-11              NULL
-12              NULL
-13              NULL
-14              NULL
-15              NULL
-16              NULL
-17              NULL
-18              NULL
-19              NULL
+// Menu:
+// 1. Show Bit Vector
+// 2. Create New File
+// 3. Show Directory
+// 4. Exit
+// Enter your choice: 1
+// Bit Vector (1 for allocated, 0 for free):
+// 0 0 0 1 0 0 1 0 0 0 
 
-Menu:
-1. Allocate File
-2. Deallocate File
-3. Display File Allocation Table (FAT)
-4. Exit
-Enter your choice: 4
-Exiting program.
-*/
+// Menu:
+// 1. Show Bit Vector
+// 2. Create New File
+// 3. Show Directory
+// 4. Exit
+// Enter your choice: 4
+// Exiting program.
