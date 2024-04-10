@@ -35,8 +35,8 @@ int scan(int request[], int n, int head, char direction) {
 
     // Scan in the specified direction
     if (direction == 'l') { // Left
-        printf("Seek Sequence\n");
-        for (int i = index; i >= 0; i--) {
+       printf("Seek Sequence\n%d ", current_track);
+        for (int i = index-1; i >= 0; i--) {
             printf("%d ", request[i]);
             seek_count += abs(current_track - request[i]);
             current_track = request[i];
@@ -44,7 +44,7 @@ int scan(int request[], int n, int head, char direction) {
         printf("0 ");
         seek_count += current_track; // Move to track 0
 
-        for (int i = index + 1; i < n; i++) {
+        for (int i = index; i < n; i++) {
             printf("%d ", request[i]);
             seek_count += abs(current_track - request[i]);
             current_track = request[i];
@@ -60,7 +60,7 @@ int scan(int request[], int n, int head, char direction) {
         printf("199 ");
         seek_count += 199 - current_track; // Move to track 199
 
-        for (int i = index - 1; i >= 0; i--) {
+        for (int i = index-1; i >= 0; i--) {
             printf("%d ", request[i]);
             seek_count += abs(current_track - request[i]);
             current_track = request[i];
