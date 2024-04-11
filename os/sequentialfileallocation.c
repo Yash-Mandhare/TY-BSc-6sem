@@ -10,8 +10,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <string.h>
 
 #define MAX_BLOCKS 100
+#define MAX_FILE_NAME_LENGTH 50
+
+struct FileEntry {
+    int allocated;
+    char name[MAX_FILE_NAME_LENGTH];
+};
 
 void showBitVector(int allocated[], int n) {
     printf("Bit Vector (1 for allocated, 0 for free):\n");
@@ -21,7 +28,7 @@ void showBitVector(int allocated[], int n) {
     printf("\n");
 }
 
-void createNewFile(int allocated[], int n, int directory[], int size) {
+void createNewFile(int allocated[], int n, struct FileEntry directory[], int size) {
     int start;
     printf("Enter starting block index for the new file: ");
     scanf("%d", &start);
@@ -45,24 +52,32 @@ void createNewFile(int allocated[], int n, int directory[], int size) {
         }
     }
 
-    printf("Creating new file starting from block %d to %d\n", start, end);
+    char name[MAX_FILE_NAME_LENGTH];
+    printf("Enter name of the new file: ");
+    scanf("%s", name);
+
+    printf("Creating new file '%s' starting from block %d to %d\n", name, start, end);
     for (int i = start; i <= end; i++) {
-        directory[i] = 1;
+        directory[i].allocated = 1;
+        strcpy(directory[i].name, name);
         allocated[i] = 1;
     }
 }
 
-void showDirectory(int directory[], int n) {
-    printf("Directory (1 for file, 0 for empty):\n");
+void showDirectory(struct FileEntry directory[], int n) {
+    printf("Directory:\n");
     for (int i = 0; i < n; i++) {
-        printf("%d ", directory[i]);
+        if (directory[i].allocated == 1) {
+            printf("Block %d: %s\n", i, directory[i].name);
+        } else {
+            printf("Block %d: Empty\n", i);
+        }
     }
-    printf("\n");
 }
 
 int main() {
     int allocated[MAX_BLOCKS] = {0}; // Initially all blocks are free
-    int directory[MAX_BLOCKS] = {0}; // Initially no files exist
+    struct FileEntry directory[MAX_BLOCKS]; // Initially no files exist
     int n;
 
     printf("Enter number of disk blocks: ");
@@ -110,6 +125,7 @@ int main() {
 
 
 
+
 // Enter number of disk blocks: 10
 
 // Menu:
@@ -120,7 +136,8 @@ int main() {
 // Enter your choice: 2
 // Enter size of the new file (number of blocks): 3
 // Enter starting block index for the new file: 2
-// Creating new file starting from block 2 to 4
+// Enter name of the new file: file1
+// Creating new file 'file1' starting from block 2 to 4
 
 // Menu:
 // 1. Show Bit Vector
@@ -137,8 +154,17 @@ int main() {
 // 3. Show Directory
 // 4. Exit
 // Enter your choice: 3
-// Directory (1 for file, 0 for empty):
-// 0 0 1 1 1 0 0 0 0 0 
+// Directory:
+// Block 0: Empty
+// Block 1: Empty
+// Block 2: file1
+// Block 3: file1
+// Block 4: file1
+// Block 5: Empty
+// Block 6: Empty
+// Block 7: Empty
+// Block 8: Empty
+// Block 9: Empty
 
 // Menu:
 // 1. Show Bit Vector
@@ -148,7 +174,8 @@ int main() {
 // Enter your choice: 2
 // Enter size of the new file (number of blocks): 2
 // Enter starting block index for the new file: 6
-// Creating new file starting from block 6 to 7
+// Enter name of the new file: file2
+// Creating new file 'file2' starting from block 6 to 7
 
 // Menu:
 // 1. Show Bit Vector
@@ -156,8 +183,17 @@ int main() {
 // 3. Show Directory
 // 4. Exit
 // Enter your choice: 3
-// Directory (1 for file, 0 for empty):
-// 0 0 1 1 1 0 1 1 0 0 
+// Directory:
+// Block 0: Empty
+// Block 1: Empty
+// Block 2: file1
+// Block 3: file1
+// Block 4: file1
+// Block 5: Empty
+// Block 6: file2
+// Block 7: file2
+// Block 8: Empty
+// Block 9: Empty
 
 // Menu:
 // 1. Show Bit Vector
