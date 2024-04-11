@@ -7,78 +7,59 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-// Function to sort the request array in ascending order
-void sortRequests(int *requests, int n) {
-    for (int i = 0; i < n - 1; i++) {
-        for (int j = 0; j < n - i - 1; j++) {
-            if (requests[j] > requests[j + 1]) {
-                // Swap requests[j] and requests[j + 1]
-                int temp = requests[j];
-                requests[j] = requests[j + 1];
-                requests[j + 1] = temp;
-            }
-        }
-    }
-}
+void look(int request[], int n, int head) {
+    int seek_count = 0;
+    int i, j;
+    int min = 0, max = 199; // Assuming disk range
+    int visited[n];
 
-// Function to find the index of the request closest to the head position
-int findClosestRequest(int *requests, int n, int head, int direction) {
-    int index = -1;
-    if (direction == -1) {
-        // Moving left
-        for (int i = 0; i < n; i++) {
-            if (requests[i] < head) {
-                index = i;
-            } else {
-                break;
-            }
-        }
-    } else {
-        // Moving right
-        for (int i = n - 1; i >= 0; i--) {
-            if (requests[i] > head) {
-                index = i;
-            } else {
-                break;
+    for (i = 0; i < n; i++)
+        visited[i] = 0;
+
+    printf("Seek Sequence\n%d ", head);
+
+    // Serve requests in ascending order
+    for (i = head; i <= max; i++) {
+        for (j = 0; j < n; j++) {
+            if (request[j] == i && !visited[j]) {
+                printf("%d ", request[j]);
+                visited[j] = 1;
+                seek_count += abs(head - request[j]);
+                head = request[j];
             }
         }
     }
-    return index;
+
+    // Serve requests in descending order
+    for (i = head; i >= min; i--) {
+        for (j = 0; j < n; j++) {
+            if (request[j] == i && !visited[j]) {
+                printf("%d ", request[j]);
+                visited[j] = 1;
+                seek_count += abs(head - request[j]);
+                head = request[j];
+            }
+        }
+    }
+
+    printf("\nTotal Number of head movement : %d\n", seek_count);
 }
 
 int main() {
-    int totalBlocks, head, direction;
-    
-    printf("Enter the total number of disk blocks: ");
-    scanf("%d", &totalBlocks);
+    int n, head;
 
-    printf("Enter the disk request string (comma-separated): ");
-    int requests[totalBlocks];
-    for (int i = 0; i < totalBlocks; i++) {
-        scanf("%d", &requests[i]);
-    }
+    printf("Enter total number of disk blocks: ");
+    scanf("%d", &n);
 
-    printf("Enter the starting head position: ");
+    int request[n];
+    printf("Enter disk request string: ");
+    for (int i = 0; i < n; i++)
+        scanf("%d", &request[i]);
+
+    printf("Enter current head position: ");
     scanf("%d", &head);
 
-    printf("Enter the direction (1 for right, -1 for left): ");
-    scanf("%d", &direction);
-
-    sortRequests(requests, totalBlocks);
-
-    printf("\nOrder of serving requests:\n");
-
-    int totalHeadMovements = 0;
-    int currentIndex = findClosestRequest(requests, totalBlocks, head, direction);
-    while (currentIndex != -1) {
-        printf("%d ", requests[currentIndex]);
-        totalHeadMovements += abs(requests[currentIndex] - head);
-        head = requests[currentIndex];
-        requests[currentIndex] = -1; // Mark as served
-        currentIndex = findClosestRequest(requests, totalBlocks, head, direction);
-    }
-
-    printf("\nTotal number of head movements: %d\n", totalHeadMovements);
+    look(request, n, head);
 
     return 0;
 }
