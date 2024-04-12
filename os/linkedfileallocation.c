@@ -14,8 +14,18 @@
 #define MAX_BLOCKS 100
 
 // Node structure for linked list
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+#include <string.h>
+
+#define MAX_BLOCKS 100
+#define MAX_FILE_NAME_LENGTH 50
+
+// Node structure for linked list
 struct Node {
     int blockIndex;
+    char name[MAX_FILE_NAME_LENGTH];
     struct Node *next;
 };
 
@@ -42,6 +52,10 @@ void createNewFile(struct Node **head, int allocated[], int n) {
         return;
     }
 
+    char name[MAX_FILE_NAME_LENGTH];
+    printf("Enter name for the new file: ");
+    scanf("%s", name);
+
     struct Node *newNode = (struct Node *)malloc(sizeof(struct Node));
     if (newNode == NULL) {
         printf("Memory allocation failed.\n");
@@ -49,22 +63,22 @@ void createNewFile(struct Node **head, int allocated[], int n) {
     }
 
     newNode->blockIndex = index;
+    strcpy(newNode->name, name);
     newNode->next = *head;
     *head = newNode;
 
     allocated[index] = 1;
 
-    printf("New file created with index %d\n", index);
+    printf("New file '%s' created with index %d\n", name, index);
 }
 
 void showDirectory(struct Node *head) {
-    printf("Directory (File blocks):\n");
+    printf("Directory (File blocks and names):\n");
     struct Node *current = head;
     while (current != NULL) {
-        printf("%d ", current->blockIndex);
+        printf("Block %d: %s\n", current->blockIndex, current->name);
         current = current->next;
     }
-    printf("\n");
 }
 
 void freeList(struct Node *head) {
@@ -122,6 +136,7 @@ int main() {
 
     return 0;
 }
+
 
 
 // Enter number of disk blocks: 10
