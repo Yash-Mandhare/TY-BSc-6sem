@@ -1,0 +1,40 @@
+<!-- create a student.xml file containing at least 5 student information -->
+
+<?xml version="1.0" encoding="UTF-8"?>
+<students>
+    <student>
+        <id>1</id>
+        <name>John Doe</name>
+        <age>20</age>
+        <gender>Male</gender>
+        <grade>A</grade>
+    </student>
+    <student>
+        <id>2</id>
+        <name>Jane Smith</name>
+        <age>21</age>
+        <gender>Female</gender>
+        <grade>B</grade>
+    </student>
+    <student>
+        <id>3</id>
+        <name>Alex Johnson</name>
+        <age>22</age>
+        <gender>Male</gender>
+        <grade>C</grade>
+    </student>
+    <student>
+        <id>4</id>
+        <name>Emily Wilson</name>
+        <age>19</age>
+        <gender>Female</gender>
+        <grade>B+</grade>
+    </student>
+    <student>
+        <id>5</id>
+        <name>Michael Brown</name>
+        <age>20</age>
+        <gender>Male</gender>
+        <grade>A-</grade>
+    </student>
+</students>

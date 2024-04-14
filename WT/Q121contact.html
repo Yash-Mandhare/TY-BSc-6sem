@@ -1,0 +1,41 @@
+<!-- Write AJAX program to read contact.dat file and print the contents of the file in a tabular formatwhen the user clicks on print button. Contact.dat file should contain srno, name, residence number,mobile number, Address. [Enter at least 3 record in contact.dat file] -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact List</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+<button id="printButton" onclick="printContacts()">Print Contacts</button>
+<div id="contactTable"></div>
+
+<script>
+function printContacts() {
+    $.ajax({
+        url: 'Q121contact.dat',
+        type: 'GET',
+        dataType: 'text',
+        success: function(data) {
+            var lines = data.split('\n');
+            var tableHTML = '<table border="1"><tr><th>Sr. No.</th><th>Name</th><th>Residence Number</th><th>Mobile Number</th><th>Address</th></tr>';
+            for(var i = 0; i < lines.length; i++){
+                var fields = lines[i].split(',');
+                tableHTML += '<tr>';
+                for(var j = 0; j < fields.length; j++){
+                    tableHTML += '<td>' + fields[j] + '</td>';
+                }
+                tableHTML += '</tr>';
+            }
+            tableHTML += '</table>';
+            $('#contactTable').html(tableHTML);
+        }
+    });
+}
+</script>
+
+</body>
+</html>
+

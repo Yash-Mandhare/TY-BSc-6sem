@@ -1,0 +1,60 @@
+<!-- Write Ajax program to get book details from XML file when user select a book name. Create XMLfile for storing details of book(title, author, year, price) -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Book Details</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+
+<select id="bookSelect">
+  <option value="">Select a book</option>
+  <!-- Options will be filled dynamically using JavaScript -->
+</select>
+
+<div id="bookDetails">
+  <!-- Book details will be displayed here -->
+</div>
+
+<script>
+$(document).ready(function(){
+  // Load XML file
+  $.ajax({
+    type: "GET",
+    url: "Q161books.xml",
+    dataType: "xml",
+    success: function(xml) {
+      // Parse XML and populate the dropdown
+      $(xml).find('book').each(function(){
+        var title = $(this).find('title').text();
+        $('#bookSelect').append('<option value="' + title + '">' + title + '</option>');
+      });
+
+      // When a book is selected, display its details
+      $('#bookSelect').change(function(){
+        var selectedBook = $(this).val();
+        $(xml).find('book').each(function(){
+          var title = $(this).find('title').text();
+          if (title === selectedBook) {
+            var author = $(this).find('author').text();
+            var year = $(this).find('year').text();
+            var price = $(this).find('price').text();
+            var details = 'Author: ' + author + '<br>Year: ' + year + '<br>Price: ' + price;
+            $('#bookDetails').html(details);
+            return false; // Stop looping
+          }
+        });
+      });
+    },
+    error: function() {
+      alert('Error loading XML file.');
+    }
+  });
+});
+</script>
+
+</body>
+</html>

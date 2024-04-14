@@ -1,0 +1,30 @@
+<!-- Write a JavaScript to display message ‘Exams are near, have you started preparing for?’ (usealert box ) and Accept any two numbers from user and display addition of two number .(Use Prompt andconfirm box) -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>JavaScript Example</title>
+</head>
+<body>
+
+<script>
+// JavaScript code goes here
+alert('Exams are near, have you started preparing for?');
+
+var number1 = prompt('Enter the first number:');
+var number2 = prompt('Enter the second number:');
+
+number1 = parseFloat(number1);
+number2 = parseFloat(number2);
+
+if (!isNaN(number1) && !isNaN(number2)) {
+    var sum = number1 + number2;
+    confirm('The addition of ' + number1 + ' and ' + number2 + ' is ' + sum);
+} else {
+    alert('Please enter valid numbers.');
+}
+</script>
+
+</body>
+</html>

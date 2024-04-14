@@ -1,0 +1,48 @@
+<!-- Write Ajax program to fetch suggestions when is user is typing in a textbox. (eg like googlesuggestions. Hint create array of suggestions and matching string will be displayed) -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Suggestions</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+
+<h2>Type something:</h2>
+<input type="text" id="searchInput">
+<div id="suggestions"></div>
+
+<script>
+$(document).ready(function(){
+    $('#searchInput').on('input', function() {
+        var searchText = $(this).val();
+        var suggestions = getSuggestions(searchText);
+        displaySuggestions(suggestions);
+    });
+});
+
+function getSuggestions(searchText) {
+    // Predefined array of suggestions
+    var suggestionsArray = ["apple", "banana", "cherry", "orange", "pineapple", "grape", "kiwi", "mango", "pear", "strawberry"];
+    // Filter suggestions based on searchText
+    var filteredSuggestions = suggestionsArray.filter(function(suggestion) {
+        return suggestion.toLowerCase().includes(searchText.toLowerCase());
+    });
+    return filteredSuggestions;
+}
+
+function displaySuggestions(suggestions) {
+    var suggestionsHTML = '<ul>';
+    suggestions.forEach(function(suggestion) {
+        suggestionsHTML += '<li>' + suggestion + '</li>';
+    });
+    suggestionsHTML += '</ul>';
+    $('#suggestions').html(suggestionsHTML);
+}
+</script>
+
+</body>
+</html>
+

@@ -1,0 +1,40 @@
+<!-- Write a Java Script Program to show Hello Good Morning message onload event using alert boxand display the Student registration from. -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Student Registration</title>
+<script>
+// Function to display a greeting message using an alert box
+function displayGreeting() {
+    alert("Hello, Good Morning!");
+}
+
+// Function to validate the student registration form
+function validateForm() {
+    var name = document.forms["registrationForm"]["name"].value;
+    var email = document.forms["registrationForm"]["email"].value;
+    
+    if (name == "" || email == "") {
+        alert("Name and email are required fields.");
+        return false;
+    }
+    return true;
+}
+</script>
+</head>
+<body onload="displayGreeting()">
+
+<h2>Student Registration</h2>
+
+<form name="registrationForm" onsubmit="return validateForm()">
+    <label for="name">Name:</label><br>
+    <input type="text" id="name" name="name"><br>
+    <label for="email">Email:</label><br>
+    <input type="email" id="email" name="email"><br><br>
+    <input type="submit" value="Register">
+</form>
+
+</body>
+</html>

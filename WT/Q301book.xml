@@ -1,0 +1,53 @@
+<!-- Create a XML file which gives details of books available in “Bookstore” from following
+categories.
+1) Yoga
+2) Story
+3) Technical
+and elements in each category are in the following format
+<Book>
+<Book_Title> </Book_Title>
+<Book_Author> </Book_Author>
+<Book_Price> </Book_Price>
+</Book>
+Save the file as “Bookcategory.xml” -->
+
+
+<?xml version="1.0" encoding="UTF-8"?>
+<Bookstore>
+    <Yoga>
+        <Book>
+            <Book_Title>The Power of Now</Book_Title>
+            <Book_Author>Eckhart Tolle</Book_Author>
+            <Book_Price>15.99</Book_Price>
+        </Book>
+        <Book>
+            <Book_Title>Light on Yoga</Book_Title>
+            <Book_Author>B.K.S. Iyengar</Book_Author>
+            <Book_Price>12.50</Book_Price>
+        </Book>
+    </Yoga>
+    <Story>
+        <Book>
+            <Book_Title>The Alchemist</Book_Title>
+            <Book_Author>Paulo Coelho</Book_Author>
+            <Book_Price>10.99</Book_Price>
+        </Book>
+        <Book>
+            <Book_Title>To Kill a Mockingbird</Book_Title>
+            <Book_Author>Harper Lee</Book_Author>
+            <Book_Price>9.25</Book_Price>
+        </Book>
+    </Story>
+    <Technical>
+        <Book>
+            <Book_Title>Clean Code: A Handbook of Agile Software Craftsmanship</Book_Title>
+            <Book_Author>Robert C. Martin</Book_Author>
+            <Book_Price>29.99</Book_Price>
+        </Book>
+        <Book>
+            <Book_Title>Design Patterns: Elements of Reusable Object-Oriented Software</Book_Title>
+            <Book_Author>Erich Gamma, Richard Helm, Ralph Johnson, John Vlissides</Book_Author>
+            <Book_Price>35.50</Book_Price>
+        </Book>
+    </Technical>
+</Bookstore>

@@ -1,0 +1,46 @@
+<!-- Create web Application that contains Voters details and check proper validation for (name,age, and nationality), as Name should be in upper case letters only, Age should not be less than18 yrs and Nationality should be Indian.(use HTML-AJAX-PHP) -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Voter Registration</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+
+<h2>Voter Registration Form</h2>
+<form id="voterForm" action="Q271register_voter.php" method="post">
+  <label for="name">Name (Upper Case):</label>
+  <input type="text" id="name" name="name" required><br><br>
+  
+  <label for="age">Age (18 years or older):</label>
+  <input type="number" id="age" name="age" min="18" required><br><br>
+  
+  <label for="nationality">Nationality (Indian):</label>
+  <input type="text" id="nationality" name="nationality" required><br><br>
+  
+  <input type="submit" value="Register">
+</form>
+
+<div id="response"></div>
+
+<script>
+$(document).ready(function(){
+  $('#voterForm').submit(function(event){
+    event.preventDefault();
+    var formData = $(this).serialize();
+    $.ajax({
+      url: $(this).attr('action'),
+      type: 'POST',
+      data: formData,
+      success: function(response){
+        $('#response').html(response);
+      }
+    });
+  });
+});
+</script>
+
+</body>
+</html>
