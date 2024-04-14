@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<book isbn="978-0132350884">
-    <title>PHP and MySQL Web Development</title>
-    <author>Luke Welling</author>
-    <author>Laura Thomson</author>
-    <publisher>Addison-Wesley Professional</publisher>
-    <pubDate>2008-10-20</pubDate>
-    <price currency="USD">39.99</price>
-</book>
