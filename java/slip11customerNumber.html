@@ -1,0 +1,16 @@
+<!-- Design an HTML page which passes customer number to a search servlet. The servlet searches for the customer number in a database (customer table) and returns customer details if found the number otherwise display error message. -->
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Customer Search</title>
+</head>
+<body>
+    <h2>Search Customer</h2>
+    <form action="SearchServlet" method="get">
+        <label for="customerNumber">Customer Number:</label>
+        <input type="text" id="customerNumber" name="customerNumber" required>
+        <button type="submit">Search</button>
+    </form>
+</body>
+</html>
