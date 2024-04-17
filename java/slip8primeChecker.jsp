@@ -1,17 +1,17 @@
 <!-- Write a JSP program to check whether a given number is prime or not. Display the result in red color. -->
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<!DOCTYPE html>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <html>
 <head>
-    <meta charset="UTF-8">
     <title>Prime Number Checker</title>
 </head>
 <body>
-
-<%
+    <form>
+        <input type="number" name="number">
+    </form>
+    <%
     // Get the number from the request parameter
-    int number = Integer.parseInt(request.getParameter("number"));
-
+    String numberstr = request.getParameter("number");
+    int number=Integer.parseInt(numberstr);
     // Check if the number is prime
     boolean isPrime = true;
     if (number <= 1) {
@@ -24,13 +24,14 @@
             }
         }
     }
-%>
+    %>
 
-<h2>Prime Number Checker</h2>
-<p>
-    The number <%= number %> is
-    <font color="red"><%= isPrime ? "prime" : "not prime" %></font>.
-</p>
-
+    <h2>Prime Number Checker</h2>
+    <p>
+        The number <%= number %> is
+        <span style="color: red;">
+            <%= isPrime ? "prime" : "not prime" %>
+        </span>.
+    </p>
 </body>
 </html>
