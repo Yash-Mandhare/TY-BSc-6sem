@@ -1,47 +1,35 @@
 //Write a java program to simulate traffic signal using threads.
 public class slip6TrafficSignalSimulator {
-    public static void main(String[] args) {
-        TrafficSignal trafficSignal = new TrafficSignal();
-        trafficSignal.simulate();
+    public static void main(String[] args){
+        Traffic traffic= new Traffic();
+        traffic.simulate();
     }
 }
 
-class TrafficSignal {
-    private SignalState currentState;
+class Traffic{
+    private Signalstate current;
 
-    public TrafficSignal() {
-        currentState = SignalState.RED; // Start with red signal
+    public Traffic(){
+        current =Signalstate.RED;
     }
+    public void simulate(){
+        try{
+            while(true){
+                System.out.println("Signal is: " + current);
+                Thread.sleep(1000);
 
-    public void simulate() {
-        try {
-            while (true) {
-                System.out.println("Signal is: " + currentState);
-                Thread.sleep(currentState.getDuration() * 1000); // Convert duration to milliseconds
-
-                // Change signal state
-                currentState = currentState.nextState();
+                current = current.nextState();
             }
-        } catch (InterruptedException e) {
+        }catch(InterruptedException e){
             e.printStackTrace();
         }
     }
 }
 
-enum SignalState {
-    RED(1), GREEN(1), YELLOW(1);
+enum Signalstate{
+    RED,GREEN,YELLOW;
 
-    private final int duration; // Duration in seconds
-
-    SignalState(int duration) {
-        this.duration = duration;
-    }
-
-    public int getDuration() {
-        return duration;
-    }
-
-    public SignalState nextState() {
+    public Signalstate nextState() {
         switch (this) {
             case RED:
                 return GREEN;
