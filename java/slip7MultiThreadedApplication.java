@@ -2,30 +2,26 @@
 
 import java.util.Random;
 
-public class slip7MultiThreadedApplication {
+public class slip7RandomNumberCalculator {
     public static void main(String[] args) {
-        RandomNumberGeneratorThread generatorThread = new RandomNumberGeneratorThread();
-        SquareCalculatorThread squareThread = new SquareCalculatorThread();
-        CubeCalculatorThread cubeThread = new CubeCalculatorThread();
+        NumberGenerator generator = new NumberGenerator();
+        NumberProcessor squareProcessor = new NumberProcessor("Square");
+        NumberProcessor cubeProcessor = new NumberProcessor("Cube");
 
-        generatorThread.start();
-        squareThread.start();
-        cubeThread.start();
+        generator.start();
+        squareProcessor.start();
+        cubeProcessor.start();
     }
 }
 
-class RandomNumberGeneratorThread extends Thread {
+class NumberGenerator extends Thread {
     @Override
     public void run() {
         Random random = new Random();
         while (true) {
             int randomNumber = random.nextInt(100); // Generate a random number between 0 and 99
             System.out.println("Generated number: " + randomNumber);
-            if (randomNumber % 2 == 0) {
-                SquareCalculatorThread.setNumber(randomNumber);
-            } else {
-                CubeCalculatorThread.setNumber(randomNumber);
-            }
+            NumberProcessor.process(randomNumber);
             try {
                 Thread.sleep(1000); // Sleep for one second
             } catch (InterruptedException e) {
@@ -35,45 +31,36 @@ class RandomNumberGeneratorThread extends Thread {
     }
 }
 
-class SquareCalculatorThread extends Thread {
+class NumberProcessor extends Thread {
+    private static final Object lock = new Object(); // Lock for synchronization
     private static int number;
+    private String type;
 
-    public static synchronized void setNumber(int number) {
-        SquareCalculatorThread.number = number;
+    public NumberProcessor(String type) {
+        this.type = type;
     }
 
-    @Override
-    public void run() {
-        while (true) {
-            if (number % 2 == 0) {
-                System.out.println("Square of " + number + ": " + (number * number));
-            }
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+    public static void process(int num) {
+        synchronized (lock) {
+            number = num;
+            lock.notifyAll(); // Notify all waiting threads
         }
     }
-}
-
-class CubeCalculatorThread extends Thread {
-    private static int number;
-
-    public static synchronized void setNumber(int number) {
-        CubeCalculatorThread.number = number;
-    }
 
     @Override
     public void run() {
         while (true) {
-            if (number % 2 != 0) {
-                System.out.println("Cube of " + number + ": " + (number * number * number));
-            }
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            synchronized (lock) {
+                try {
+                    lock.wait(); // Wait for a number to process
+                    if (type.equals("Square") && number % 2 == 0) {
+                        System.out.println("Square of " + number + ": " + (number * number));
+                    } else if (type.equals("Cube") && number % 2 != 0) {
+                        System.out.println("Cube of " + number + ": " + (number * number * number));
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
