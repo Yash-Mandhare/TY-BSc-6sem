@@ -1,41 +1,26 @@
 //Write a java program to simulate traffic signal using threads.
-import java.util.concurrent.TimeUnit;
-
 public class slip6TrafficSignalSimulator {
     public static void main(String[] args) {
         TrafficSignal trafficSignal = new TrafficSignal();
-
-        Thread signalThread = new Thread(trafficSignal);
-        signalThread.start();
+        trafficSignal.simulate();
     }
 }
 
-class TrafficSignal implements Runnable {
+class TrafficSignal {
     private SignalState currentState;
 
     public TrafficSignal() {
         currentState = SignalState.RED; // Start with red signal
     }
 
-    @Override
-    public void run() {
+    public void simulate() {
         try {
             while (true) {
                 System.out.println("Signal is: " + currentState);
-                TimeUnit.SECONDS.sleep(currentState.getDuration());
+                Thread.sleep(currentState.getDuration() * 1000); // Convert duration to milliseconds
 
                 // Change signal state
-                switch (currentState) {
-                    case RED:
-                        currentState = SignalState.GREEN;
-                        break;
-                    case GREEN:
-                        currentState = SignalState.YELLOW;
-                        break;
-                    case YELLOW:
-                        currentState = SignalState.RED;
-                        break;
-                }
+                currentState = currentState.nextState();
             }
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -44,7 +29,7 @@ class TrafficSignal implements Runnable {
 }
 
 enum SignalState {
-    RED(5), GREEN(5), YELLOW(2);
+    RED(1), GREEN(1), YELLOW(1);
 
     private final int duration; // Duration in seconds
 
@@ -54,5 +39,16 @@ enum SignalState {
 
     public int getDuration() {
         return duration;
+    }
+
+    public SignalState nextState() {
+        switch (this) {
+            case RED:
+                return GREEN;
+            case GREEN:
+                return YELLOW;
+            default:
+                return RED;
+        }
     }
 }
