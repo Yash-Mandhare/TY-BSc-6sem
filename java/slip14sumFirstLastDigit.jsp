@@ -10,8 +10,8 @@
 <body>
     <h2>Sum of First and Last Digit</h2>
     
-    <%
-        // Method to calculate sum of first and last digits
+    <%!
+        // Define the method inside a declaration block
         int sumFirstLastDigit(int num) {
             int lastDigit = num % 10;
             int firstDigit = 0;
@@ -21,7 +21,9 @@
             }
             return firstDigit + lastDigit;
         }
+    %>
 
+    <%
         // Get the number from the request parameter
         String numberStr = request.getParameter("number");
         int sum = 0;
