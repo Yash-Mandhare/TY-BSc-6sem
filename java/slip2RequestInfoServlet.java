@@ -1,34 +1,29 @@
 // Design a servlet that provides information about a HTTP request from a client, such as IP-Address and browser type. The servlet also provides information about the server on which the servlet is running, such as the operating system type, and the names of currently loaded servlets.
 
 import java.io.*;
+import java.text.*;
+import java.util.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
-import java.util.Enumeration;
 
-public class slip2RequestInfoServlet extends HttpServlet {
-    public void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
 
-        response.setContentType("text/html");
-        PrintWriter out = response.getWriter();
 
-        out.println("<html><head><title>Request Information</title></head><body>");
-        out.println("<h1>Request Information:</h1>");
-        out.println("<p><b>Client IP Address:</b> " + request.getRemoteAddr() + "</p>");
-        out.println("<p><b>Browser Type:</b> " + request.getHeader("User-Agent") + "</p>");
+public class show extends HttpServlet {
 
-        out.println("<h1>Server Information:</h1>");
-        out.println("<p><b>Server Operating System:</b> " + System.getProperty("os.name") + "</p>");
 
-        out.println("<p><b>Names of currently loaded servlets:</b></p>");
-        ServletContext context = getServletContext();
-        Enumeration<String> servletNames = context.getServletNames();
-        while (servletNames.hasMoreElements()) {
-            out.println("<p>" + servletNames.nextElement() + "</p>");
-        }
+    public void doGet(HttpServletRequest req,HttpServletResponse res) throws IOException, ServletException
+	{	res.setContentType("text/html");
+		PrintWriter out = res.getWriter();
 
-        out.println("</body></html>");
-        out.close();
-    }
+		out.println("Protocol = "+req.getProtocol()+"<br>");
+		out.println("Remote Address = "+req.getRemoteAddr()+"<br>");
+		out.println("Remote Host = "+req.getRemoteHost()+"<br>");
+		out.println("Server Name = "+req.getServerName()+"<br>");
+		out.println("Server Port = "+req.getServerPort()+"<br>");
+		out.println("Server Path = "+req.getServletPath()+"<br>");
+		out.println("Server Method = "+req.getMethod()+"<br>");
+		out.println("Server Remote User = "+req.getRemoteUser()+"<br>");
+		out.close();
+	}
 }
 
