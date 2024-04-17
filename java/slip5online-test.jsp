@@ -10,93 +10,79 @@
     <title>Online Multiple Choice Test</title>
 </head>
 <body>
+    <%!
+        String JDBC_DRIVER = "org.postgresql.Driver";
+        String DB_URL = "jdbc:postgresql://localhost:5432/postgres";
+        String USER = "postgres";
+        String PASS = "6512";
+    %>
 
-<%
-    // JDBC driver name and database URL
-    String JDBC_DRIVER = "your_jdbc_driver";
-    String DB_URL = "your_database_url";
+    <%
+        Connection conn = null;
+        Statement stmt = null;
 
-    // Database credentials
-    String USER = "your_database_username";
-    String PASS = "your_database_password";
-
-    Connection conn = null;
-    Statement stmt = null;
-
-    try {
-        // Register JDBC driver
-        Class.forName(JDBC_DRIVER);
-
-        // Open a connection
-        conn = DriverManager.getConnection(DB_URL, USER, PASS);
-
-        // Execute a query to select a random question
-        stmt = conn.createStatement();
-        String sql = "SELECT * FROM questions ORDER BY RAND() LIMIT 1";
-        ResultSet rs = stmt.executeQuery(sql);
-
-        // Display the question and choices using radio buttons
-        if (rs.next()) {
-            String question = rs.getString("question_text");
-            String choice1 = rs.getString("choice1");
-            String choice2 = rs.getString("choice2");
-            String choice3 = rs.getString("choice3");
-            String choice4 = rs.getString("choice4");
-            int correctChoice = rs.getInt("correct_choice");
-
-            out.println("<h2>Question:</h2>");
-            out.println("<p>" + question + "</p>");
-            out.println("<form method=\"post\">");
-            out.println("<input type=\"radio\" name=\"choice\" value=\"1\">" + choice1 + "<br>");
-            out.println("<input type=\"radio\" name=\"choice\" value=\"2\">" + choice2 + "<br>");
-            out.println("<input type=\"radio\" name=\"choice\" value=\"3\">" + choice3 + "<br>");
-            out.println("<input type=\"radio\" name=\"choice\" value=\"4\">" + choice4 + "<br>");
-            out.println("<input type=\"submit\" name=\"action\" value=\"Next\">");
-            out.println("<input type=\"submit\" name=\"action\" value=\"Submit\">");
-            out.println("</form>");
-        }
-
-        // Clean-up environment
-        rs.close();
-        stmt.close();
-        conn.close();
-    } catch (SQLException se) {
-        // Handle errors for JDBC
-        se.printStackTrace();
-    } catch (Exception e) {
-        // Handle errors for Class.forName
-        e.printStackTrace();
-    } finally {
-        // Finally block to close resources
         try {
-            if (stmt != null) stmt.close();
-        } catch (SQLException se2) {
-        } // nothing we can do
-        try {
-            if (conn != null) conn.close();
+            Class.forName(JDBC_DRIVER);
+            conn = DriverManager.getConnection(DB_URL, USER, PASS);
+            stmt = conn.createStatement();
+            String sql = "SELECT * FROM questions ORDER BY RANDOM() LIMIT 1";
+            ResultSet rs = stmt.executeQuery(sql);
+
+            if (rs.next()) {
+                String question = rs.getString("question_text");
+                String choice1 = rs.getString("choice1");
+                String choice2 = rs.getString("choice2");
+                String choice3 = rs.getString("choice3");
+                String choice4 = rs.getString("choice4");
+
+                request.setAttribute("question", question);
+                request.setAttribute("choice1", choice1);
+                request.setAttribute("choice2", choice2);
+                request.setAttribute("choice3", choice3);
+                request.setAttribute("choice4", choice4);
+            } else {
+                out.println("No questions found in the database.");
+            }
+
+            rs.close();
+            stmt.close();
+            conn.close();
         } catch (SQLException se) {
+            // Handle errors for JDBC
             se.printStackTrace();
-        } // end finally try
-    } // end try
-%>
-
-<%
-    // Handle form submission
-    if ("POST".equalsIgnoreCase(request.getMethod())) {
-        String action = request.getParameter("action");
-        if ("Next".equalsIgnoreCase(action)) {
-            // Display the next question
-            response.sendRedirect("online-test.jsp");
-        } else if ("Submit".equalsIgnoreCase(action)) {
-            // Handle submission and calculate total score
-            // You need to implement this logic based on the selected choices and correct answers
-            // For this example, let's assume total score is always 0
-            int totalScore = 0;
-            out.println("<h2>Total Score:</h2>");
-            out.println("<p>" + totalScore + "</p>");
+            out.println("SQL Exception: " + se.getMessage());
+        } catch (Exception e) {
+            // Handle other exceptions
+            e.printStackTrace();
+            out.println("Exception: " + e.getMessage());
         }
-    }
-%>
+    %>
 
+    <h2>Question:</h2>
+    <p><%= request.getAttribute("question") %></p>
+    <form method="post">
+        <input type="radio" name="choice" value="1"><%= request.getAttribute("choice1") %><br>
+        <input type="radio" name="choice" value="2"><%= request.getAttribute("choice2") %><br>
+        <input type="radio" name="choice" value="3"><%= request.getAttribute("choice3") %><br>
+        <input type="radio" name="choice" value="4"><%= request.getAttribute("choice4") %><br>
+        <input type="submit" name="action" value="Next">
+        <input type="submit" name="action" value="Submit">
+    </form>
+
+    <%-- Handle form submission --%>
+    <% 
+        if ("POST".equalsIgnoreCase(request.getMethod())) {
+            String action = request.getParameter("action");
+            if ("Next".equalsIgnoreCase(action)) {
+                response.sendRedirect("online-test.jsp");
+            } else if ("Submit".equalsIgnoreCase(action)) {
+                int totalScore = 0;
+    %>
+                <h2>Total Score:</h2>
+                <p><%= totalScore %></p>
+    <%
+            }
+        }
+    %>
 </body>
 </html>
